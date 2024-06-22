@@ -101,19 +101,82 @@ public class SinglyLinkedList {
         }
     }
 
+    public boolean findSearchKey(int searchKey) {
+        if (head == null) {
+            return false;
+        }
+
+        ListNode current = head;
+        while (current != null) {
+            if (current.getData() == searchKey) {
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+
+    public void reverse() {
+        // 1 --> 2 --> 3 --> 4 --> null
+        ListNode current = head;
+        ListNode previous = null;
+        ListNode next = null;
+
+        while (current != null) {
+            next = current.getNext();
+            current.setNext(previous);
+            previous = current;
+            head = previous;
+            current = next;
+        }
+    }
+
+    public ListNode getNthNodeFromEnd(int n) {
+        if (head == null) {
+            return null;
+        }
+        int count = 0;
+        ListNode mainPtr = head;
+        ListNode refPtr = head;
+        while (count < n) {
+            refPtr = refPtr.getNext();
+            count++;
+        }
+        while (refPtr != null) {
+            mainPtr = mainPtr.getNext();
+            refPtr = refPtr.getNext();
+        }
+        return mainPtr;
+    }
+
+    public void sortList() {
+        ListNode current = head;
+        // 1 -> 1 -> 2 -> 3 -> 3
+        //
+        while (current != null && current.getNext() != null) {
+            if (current.getData() == current.getNext().getData()) {
+                current.setNext(current.getNext().getNext());
+            } else {
+                current = current.getNext();
+            }
+        }
+    }
+
     public static void main(String[] args) {
         SinglyLinkedList singlyLinkedList = new SinglyLinkedList();
         singlyLinkedList.head = new ListNode(1);
-        ListNode second = new ListNode(2);
-        ListNode third = new ListNode(3);
-        ListNode fourth = new ListNode(5);
+        ListNode second = new ListNode(1);
+        ListNode third = new ListNode(2);
+        ListNode fourth = new ListNode(3);
+        ListNode fifth = new ListNode(3);
 
         singlyLinkedList.head.setNext(second);
         second.setNext(third);
         third.setNext(fourth);
+        fourth.setNext(fifth);
 
         singlyLinkedList.display();
-        singlyLinkedList.deleteAtPosition(3);
+        singlyLinkedList.sortList();
         singlyLinkedList.display();
     }
 }
