@@ -12,6 +12,14 @@ public class SinglyLinkedList {
         System.out.println("null");
     }
 
+    public static void display(ListNode listNode) {
+        while (listNode != null) {
+            System.out.print(listNode.getData() + " --> ");
+            listNode = listNode.getNext();
+        }
+        System.out.println("null");
+    }
+
     public int length() {
         if (head == null) {
             return 0;
@@ -105,7 +113,6 @@ public class SinglyLinkedList {
         if (head == null) {
             return false;
         }
-
         ListNode current = head;
         while (current != null) {
             if (current.getData() == searchKey) {
@@ -117,11 +124,9 @@ public class SinglyLinkedList {
     }
 
     public void reverse() {
-        // 1 --> 2 --> 3 --> 4 --> null
         ListNode current = head;
         ListNode previous = null;
         ListNode next = null;
-
         while (current != null) {
             next = current.getNext();
             current.setNext(previous);
@@ -151,8 +156,6 @@ public class SinglyLinkedList {
 
     public void sortList() {
         ListNode current = head;
-        // 1 -> 1 -> 2 -> 3 -> 3
-        //
         while (current != null && current.getNext() != null) {
             if (current.getData() == current.getNext().getData()) {
                 current.setNext(current.getNext().getNext());
@@ -162,21 +165,165 @@ public class SinglyLinkedList {
         }
     }
 
+    public void insertInSortedList(int value) {
+        ListNode newNode = new ListNode(value);
+        ListNode currentNode = head;
+        ListNode temp = null;
+        while (currentNode != null && currentNode.getData() < newNode.getData()) {
+            temp = currentNode;
+            currentNode = currentNode.getNext();
+        }
+        newNode.setNext(currentNode);
+        temp.setNext(newNode);
+    }
+
+    public void deleteNode(int key) {
+        ListNode tempNode = null;
+        ListNode currentNode = head;
+        if (currentNode != null && currentNode.getData() == key) {
+            head = head.getNext();
+            return;
+        }
+        while (currentNode != null && currentNode.getData() != key) {
+            tempNode = currentNode;
+            currentNode = currentNode.getNext();
+        }
+        if (currentNode == null) {
+            return;
+        }
+        tempNode.setNext(currentNode.getNext());
+    }
+
+    public boolean hasCycle() {
+        ListNode slowPointer = head;
+        ListNode fastPointer = head;
+        while (fastPointer != null && fastPointer.getNext() != null) {
+            slowPointer = slowPointer.getNext();
+            fastPointer = fastPointer.getNext().getNext();
+
+            if (slowPointer == fastPointer) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ListNode startNodeInALoop() {
+        ListNode fastPointer = head;
+        ListNode slowPointer = head;
+        while (fastPointer != null && fastPointer.getNext() != null) {
+            slowPointer = slowPointer.getNext();
+            fastPointer = fastPointer.getNext().getNext();
+
+            if (slowPointer == fastPointer) {
+                return getStartingNode(slowPointer);
+            }
+        }
+        return null;
+    }
+
+    public ListNode getStartingNode(ListNode slowPointer) {
+        ListNode tempNode = head;
+        while (tempNode != slowPointer) {
+            tempNode = tempNode.getNext();
+            slowPointer = slowPointer.getNext();
+        }
+        return tempNode;
+    }
+
+    public ListNode removeLoop() {
+        ListNode fastPointer = head;
+        ListNode slowPointer = head;
+        while (fastPointer != null && fastPointer.getNext() != null) {
+            slowPointer = slowPointer.getNext();
+            fastPointer = fastPointer.getNext().getNext();
+
+            if (slowPointer == fastPointer) {
+                removeLoop(slowPointer);
+            }
+        }
+        return null;
+    }
+
+    public void removeLoop(ListNode slowPointer) {
+        ListNode tempNode = head;
+        while (tempNode.getNext() != slowPointer.getNext()) {
+            tempNode = tempNode.getNext();
+            slowPointer = slowPointer.getNext();
+        }
+        slowPointer.setNext(null);
+    }
+
+    public static ListNode merge(ListNode a, ListNode b) {
+        // 1 -> 4 -> 6 -> null
+        // 2 -> 5 -> 7 -> null
+        ListNode dummyNode = new ListNode(0);
+        ListNode tail = dummyNode;
+
+        while (a != null && b != null) {
+            if (a.getData() <= b.getData()) {
+                tail.setNext(a);
+                a = a.getNext();
+            } else {
+                tail.setNext(b);
+                b = b.getNext();
+            }
+            tail = tail.getNext();
+        }
+        if (a == null) {
+            tail.setNext(b);
+        } else {
+            tail.setNext(a);
+        }
+
+        return dummyNode.getNext();
+    }
+
+    public static ListNode add(ListNode a, ListNode b) {
+        ListNode dummyNode = new ListNode(0);
+        ListNode tailNode = dummyNode;
+        int carry = 0;
+        while (a != null || b != null) {
+            int x = a != null ? a.getData() : 0;
+            int y = b != null ? b.getData() : 0;
+            int sum = x + y + carry;
+            carry = sum / 10;
+            tailNode.setNext(new ListNode(sum % 10));
+            tailNode = tailNode.getNext();
+            if (a != null) a = a.getNext();
+            if (b != null) b = b.getNext();
+        }
+        if (carry > 0) {
+            tailNode.setNext(new ListNode(carry));
+        }
+        return dummyNode.getNext();
+    }
+
     public static void main(String[] args) {
-        SinglyLinkedList singlyLinkedList = new SinglyLinkedList();
-        singlyLinkedList.head = new ListNode(1);
-        ListNode second = new ListNode(1);
-        ListNode third = new ListNode(2);
-        ListNode fourth = new ListNode(3);
-        ListNode fifth = new ListNode(3);
+        SinglyLinkedList s1 = new SinglyLinkedList();
+        s1.head = new ListNode(5);
 
-        singlyLinkedList.head.setNext(second);
-        second.setNext(third);
-        third.setNext(fourth);
-        fourth.setNext(fifth);
+        SinglyLinkedList s2 = new SinglyLinkedList();
+        s2.head = new ListNode(5);
 
-        singlyLinkedList.display();
-        singlyLinkedList.sortList();
-        singlyLinkedList.display();
+        s1.insertLast(4);
+        s1.insertLast(3);
+        s1.insertLast(2);
+        s1.insertLast(1);
+
+
+        s2.insertLast(4);
+
+        s1.display();
+        s2.display();
+
+        display(add(s1.head, s2.head));
+        // we have 5 4 3 2 1 for 12345
+        // 54 for 45
+        // 12345
+        // +  45
+        // -----
+        // 12390
+        // You can reverse list to see actual value
     }
 }
