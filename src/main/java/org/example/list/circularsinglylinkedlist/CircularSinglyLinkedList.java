@@ -1,5 +1,7 @@
 package org.example.list.circularsinglylinkedlist;
 
+import java.util.NoSuchElementException;
+
 public class CircularSinglyLinkedList {
     private ListNode last;
     private int length;
@@ -34,6 +36,10 @@ public class CircularSinglyLinkedList {
     public void display() {
         ListNode currentNode = last.getNext();
 
+        if (isEmpty()) {
+            throw new NoSuchElementException("List is already empty");
+        }
+
         while (currentNode != last) {
             System.out.print(currentNode.getData() + " --> ");
             currentNode = currentNode.getNext();
@@ -66,14 +72,53 @@ public class CircularSinglyLinkedList {
         length++;
     }
 
+    public ListNode deleteFirst() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        ListNode temp = last.getNext();
+        if (last.getNext() == last) {
+            last = null;
+        } else {
+            last.setNext(temp.getNext());
+        }
+
+        temp.setNext(null);
+        length--;
+        return temp;
+    }
+
+    public ListNode deleteLast() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("List is already empty");
+        }
+
+        ListNode first = last.getNext();
+        ListNode temp = last;
+        if (first == last) {
+            last = null;
+        } else {
+            ListNode current = first;
+            while (current.getNext() != last) {
+                current = current.getNext();
+            }
+            current.setNext(first);
+            last = current;
+        }
+        length--;
+        return temp;
+    }
+
     public static void main(String[] args) {
         CircularSinglyLinkedList list = new CircularSinglyLinkedList();
 
-        list.creteCircularSinglyLinkedList();
-        list.display();
-        list.insertLast(100);
-        list.insertLast(101);
-        list.insertLast(100);
+//        list.creteCircularSinglyLinkedList();
+//        list.display();
+        list.insertLast(2);
+        list.insertLast(3);
+        list.insertLast(4);
+        list.deleteLast();
         list.display();
     }
 }
